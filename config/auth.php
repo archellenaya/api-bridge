@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Platform\User;
 
 return [
 
@@ -16,8 +16,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => env('AUTH_GUARD', 'platform'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'platform_users'),
     ],
 
     /*
@@ -38,9 +38,13 @@ return [
     */
 
     'guards' => [
+        'platform' => [
+            'driver' => 'session',
+            'provider' => 'platform_users',
+        ],
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'platform_users',
         ],
     ],
 
@@ -62,7 +66,7 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'platform_users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
@@ -93,8 +97,8 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'platform_users' => [
+            'provider' => 'platform_users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

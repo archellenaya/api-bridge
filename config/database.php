@@ -44,6 +44,18 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
+        'central' => [
+            'driver' => env('CENTRAL_DB_CONNECTION', 'sqlite'),
+            'url' => env('CENTRAL_DB_URL'),
+            'database' => env('CENTRAL_DB_DATABASE', database_path('central.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'busy_timeout' => null,
+            'journal_mode' => null,
+            'synchronous' => null,
+            'transaction_mode' => 'DEFERRED',
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
