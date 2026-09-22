@@ -20,7 +20,14 @@ class ProcessTenantRequest implements ShouldQueue
 
     public function handle(): void
     {
-        // Phase 1 placeholder for tenant-aware queue processing.
-        // This job is intentionally simple and should later resolve the tenant context.
+        $tenant = tenant();
+
+        if ($tenant && $tenant->getKey() !== $this->tenantId) {
+            tenancy()->initialize(tenancy()->find($this->tenantId));
+        }
+
+        $tag = config('tenancy.cache.tag_base', 'tenant') . ':' . $this->tenantId;
+
+        cache()->tags([$tag])->put('last_route', $this->route, 60);
     }
 }
