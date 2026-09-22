@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     sqlite3 \
     libsqlite3-dev \
+    php8.3-sqlite3 \
     libpq-dev \
     default-libmysqlclient-dev \
     build-essential \
