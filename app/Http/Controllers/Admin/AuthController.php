@@ -10,28 +10,25 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return response()->json([
-            'message' => 'Platform login required.',
-            'login_url' => '/admin/login',
-        ]);
+        return view('admin.login');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
         if (Auth::guard('platform')->attempt($credentials)) {
             $request->session()->regenerate();
 
-            return response()->json([
-                'status' => 'authenticated',
-                'redirect' => '/admin',
-            ]);
+            return redirect()->intended('/admin');
         }
 
-        return response()->json([
-            'status' => 'invalid_credentials',
-        ], 401);
+        return back()->withErrors([
+            'email' => 'These credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)
@@ -41,8 +38,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'status' => 'logged_out',
-        ]);
+        return redirect('/admin/login');
     }
 }
