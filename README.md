@@ -1,58 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# APIBridge
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+APIBridge is a Laravel-based multi-tenant platform for managing tenant infrastructure, source connectors, API endpoints, queue/cache processing, and admin operations.
 
-## About Laravel
+## Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project includes:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- platform-level admin and tenant management
+- tenant isolation for per-tenant databases and domains
+- connector-based source integrations for REST APIs
+- queue and cache integration with Redis
+- endpoint orchestration, logging, and metrics
+- tenant settings and operations visibility
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Quick start
 
-## Learning Laravel
+### Prerequisites
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Docker and Docker Compose
+- PHP 8.3+
+- Composer
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Local runtime
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+docker compose -f docker-compose.yml up -d --build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Then open:
 
-## Contributing
+- http://localhost:8000
+- http://localhost:8000/admin/login
+- http://localhost:8000/api/v1/health
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Project phases
 
-## Code of Conduct
+The app has been implemented across these project phases:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Phase 0: bootstrap and runtime
+- Phase 1: core multi-tenant foundation
+- Phase 2: source connector layer
+- Phase 3: queue and cache integration
+- Phase 4: API platform and endpoint orchestration
+- Phase 5: admin and operations
 
-## Security Vulnerabilities
+See [docs/project-guide.md](docs/project-guide.md) for the complete summary and architecture notes.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Key configuration files
+
+- [docker-compose.yml](docker-compose.yml)
+- [.env](.env)
+- [.env.example](.env.example)
+- [config/tenancy.php](config/tenancy.php)
+- [config/database.php](config/database.php)
+- [config/queue.php](config/queue.php)
+- [config/cache.php](config/cache.php)
+
+## Verification
+
+Run the focused regression suite with:
+
+```bash
+php artisan test --filter='PhaseFive|PhaseFour|PhaseThree|PhaseTwo|PhaseOne'
+```
+
+This suite verifies the app phases together and is the current project health check.
+
+## Notes
+
+- Redis support is required for the queue and cache runtime.
+- The test environment uses SQLite in-memory configuration while the local runtime uses the Docker stack.
+- The project is intended to evolve into a production-ready multi-tenant API platform with admin controls and tenant-connected sources.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is configured as a Laravel application and follows the standard project conventions used by the repository.
