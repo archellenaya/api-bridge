@@ -16,6 +16,10 @@ class PhaseOneServiceProvider extends ServiceProvider
 
             return $factory;
         });
+
+        $this->app->bind(RestApiConnector::class, function () {
+            return new RestApiConnector();
+        });
     }
 
     public function boot(): void

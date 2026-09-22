@@ -2,28 +2,40 @@
 
 namespace App\Services\Connectors;
 
-use App\Services\Connectors\Contracts\ConnectorInterface;
 use Illuminate\Support\Facades\Http;
+use RuntimeException;
 
-class RestApiConnector implements ConnectorInterface
+class RestApiConnector extends BaseConnector
 {
     public function testConnection(array $config): bool
     {
-        $response = Http::baseUrl($config['base_url'] ?? '')->withHeaders($config['headers'] ?? [])->get('/');
+        $config = SourceConfigValidator::validate($config);
 
-        return $response->successful() || $response->status() === 404 || $response->status() === 401;
+        try {
+            $response = Http::baseUrl($config['base_url'])
+                ->withHeaders($config['headers'])
+                ->timeout($config['timeout'])
+                ->get('/');
+
+            return $response->successful() || $response->status() === 404 || $response->status() === 401;
+        } catch (\Throwable $exception) {
+            return false;
+        }
     }
 
     public function execute(string $method, string $url, array $options = []): array
     {
-        $response = Http::withHeaders($options['headers'] ?? [])
-            ->withOptions($options['http_options'] ?? [])
-            ->send($method, $url, $options['payload'] ?? []);
+        $options = $this->requestOptions($options);
 
-        return [
-            'status' => $response->status(),
-            'body' => $response->json(),
-            'headers' => $response->headers(),
-        ];
+        try {
+            $response = Http::withHeaders($options['headers'])
+                ->withOptions($options['http_options'])
+                ->timeout($options['timeout'])
+                ->send($method, $url, $options['payload']);
+
+            return $this->normalizeResponse($response);
+        } catch (\Throwable $exception) {
+            throw new RuntimeException($exception->getMessage(), 0, $exception);
+        }
     }
 }
